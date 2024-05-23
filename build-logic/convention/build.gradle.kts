@@ -30,5 +30,9 @@ gradlePlugin {
             id = "runique.android.library.compose"
             implementationClass = "AndroidLibraryComposeConventionPlugin"
         }
+        register("androidFeature") {
+            id = "runique.android.feature"
+            implementationClass = "AndroidFeatureConventionPlugin"
+        }
     }
 }
