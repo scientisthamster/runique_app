@@ -1,6 +1,6 @@
 package com.scientisthamster.auth.presentation.intro
 
-sealed interface IntroAction {
+internal sealed interface IntroAction {
 
     data object OnSignInClick : IntroAction
 
