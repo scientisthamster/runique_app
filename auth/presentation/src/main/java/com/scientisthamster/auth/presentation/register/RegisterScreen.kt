@@ -2,6 +2,7 @@
 
 package com.scientisthamster.auth.presentation.register
 
+import android.widget.Toast
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -14,6 +15,8 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
@@ -29,6 +32,7 @@ import com.scientisthamster.core.presentation.designsystem.components.GradientBa
 import com.scientisthamster.core.presentation.designsystem.components.RuniqueButton
 import com.scientisthamster.core.presentation.designsystem.components.RuniquePasswordTextField
 import com.scientisthamster.core.presentation.designsystem.components.RuniqueTextField
+import com.scientisthamster.core.presentation.ui.ObserveAsEvents
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -40,8 +44,35 @@ fun RegisterScreenRoute(
 
     val state by viewModel.state.collectAsStateWithLifecycle()
 
+    val context = LocalContext.current
+    val keyboardController = LocalSoftwareKeyboardController.current
+
+    ObserveAsEvents(viewModel.registerEvent) { event ->
+        when (event) {
+            is RegisterEvent.Error -> {
+                keyboardController?.hide()
+                Toast.makeText(
+                    context,
+                    event.error.asString(context),
+                    Toast.LENGTH_LONG
+                ).show()
+            }
+
+            RegisterEvent.RegistrationSuccess -> {
+                keyboardController?.hide()
+                Toast.makeText(
+                    context,
+                    R.string.registration_successful,
+                    Toast.LENGTH_LONG
+                ).show()
+                onSuccessfulRegistration()
+            }
+        }
+    }
+
     RegisterScreen(
         state = state,
+        onSignInClick = onSignInClick,
         onAction = viewModel::onAction
     )
 }
@@ -49,6 +80,7 @@ fun RegisterScreenRoute(
 @Composable
 private fun RegisterScreen(
     state: RegisterState,
+    onSignInClick: () -> Unit,
     onAction: (RegisterAction) -> Unit,
 ) {
     GradientBackground {
@@ -59,7 +91,7 @@ private fun RegisterScreen(
                 .padding(horizontal = 16.dp)
                 .padding(top = 48.dp, bottom = 32.dp)
         ) {
-            HeaderBlock(onClick = { onAction(RegisterAction.OnLoginCLick) })
+            HeaderBlock(onClick = { })
             Spacer(modifier = Modifier.height(48.dp))
             RuniqueTextField(
                 state = state.email,
@@ -100,6 +132,7 @@ private fun RegisterScreenPreview() {
     RuniqueTheme {
         RegisterScreen(
             state = RegisterState(),
+            onSignInClick = {},
             onAction = {}
         )
     }

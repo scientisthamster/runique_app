@@ -30,7 +30,7 @@ class AndroidLibraryConventionPlugin : Plugin<Project> {
             }
 
             dependencies {
-                add("implementation", project.libs.findBundle("koin.compose").get())
+                add("implementation", project.libs.findBundle("koin").get())
                 add("testImplementation", kotlin("test"))
             }
         }
