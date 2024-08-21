@@ -5,7 +5,7 @@ class UserDataValidator(
 ) {
 
     fun isValidEmail(email: String): Boolean {
-        return patternValidator.matches(email)
+        return patternValidator.matches(email.trim())
     }
 
     fun validatePassword(password: String): PasswordValidationState {

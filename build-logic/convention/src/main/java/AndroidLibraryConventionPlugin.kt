@@ -2,6 +2,7 @@ import com.android.build.gradle.LibraryExtension
 import com.scientisthamster.convention.ExtensionType
 import com.scientisthamster.convention.configureBuildTypes
 import com.scientisthamster.convention.configureKotlinAndroid
+import com.scientisthamster.convention.libs
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.configure
@@ -29,6 +30,7 @@ class AndroidLibraryConventionPlugin : Plugin<Project> {
             }
 
             dependencies {
+                add("implementation", project.libs.findBundle("koin.compose").get())
                 add("testImplementation", kotlin("test"))
             }
         }

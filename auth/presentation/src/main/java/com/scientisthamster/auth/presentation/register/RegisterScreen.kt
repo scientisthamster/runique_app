@@ -57,7 +57,7 @@ private fun RegisterScreen(
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
                 .padding(horizontal = 16.dp)
-                .padding(top = 16.dp, bottom = 32.dp)
+                .padding(top = 48.dp, bottom = 32.dp)
         ) {
             HeaderBlock(onClick = { onAction(RegisterAction.OnLoginCLick) })
             Spacer(modifier = Modifier.height(48.dp))

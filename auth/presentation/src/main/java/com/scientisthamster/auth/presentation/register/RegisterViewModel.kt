@@ -36,8 +36,12 @@ internal class RegisterViewModel(
     private fun watchEmailInput() {
         _state.value.email.textAsFlow()
             .onEach { email ->
+                val isValidEmail = userDataValidator.isValidEmail(email.toString())
                 _state.update {
-                    it.copy(isEmailValid = userDataValidator.isValidEmail(email.toString()))
+                    it.copy(
+                        isEmailValid = isValidEmail,
+                        canRegister = isValidEmail && it.passwordValidationState.isValidPassword && !it.isRegistering
+                    )
                 }
             }
             .launchIn(viewModelScope)
@@ -46,8 +50,13 @@ internal class RegisterViewModel(
     private fun watchPasswordInput() {
         _state.value.password.textAsFlow()
             .onEach { password ->
+                val passwordValidationState =
+                    userDataValidator.validatePassword(password.toString())
                 _state.update {
-                    it.copy(passwordValidationState = userDataValidator.validatePassword(password.toString()))
+                    it.copy(
+                        passwordValidationState = passwordValidationState,
+                        canRegister = it.isEmailValid && passwordValidationState.isValidPassword && !it.isRegistering
+                    )
                 }
             }
             .launchIn(viewModelScope)

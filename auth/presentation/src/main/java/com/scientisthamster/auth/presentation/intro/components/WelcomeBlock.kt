@@ -26,7 +26,7 @@ internal fun WelcomeBlock(
         modifier = modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp)
-            .padding(top = 16.dp, bottom = 48.dp)
+            .padding(top = 16.dp, bottom = 64.dp)
     ) {
         Text(
             text = stringResource(id = R.string.welcome_to_runique),
