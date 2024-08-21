@@ -36,7 +36,7 @@ internal fun PasswordRequirements(passwordValidationState: PasswordValidationSta
         )
         PasswordRequirement(
             text = stringResource(id = R.string.at_least_one_number),
-            isValid = passwordValidationState.hasNumber
+            isValid = passwordValidationState.hasDigit
         )
         PasswordRequirement(
             text = stringResource(id = R.string.contains_lowercase_char),
