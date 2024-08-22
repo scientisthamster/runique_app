@@ -1,9 +1,7 @@
-package com.scientisthamster.auth.presentation.register.components
+package com.scientisthamster.auth.presentation.login.components
 
-import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
@@ -14,12 +12,7 @@ import com.scientisthamster.auth.presentation.R
 import com.scientisthamster.core.presentation.designsystem.Poppins
 
 @Composable
-internal fun ColumnScope.HeaderBlock(onClick: () -> Unit) {
-    Text(
-        text = stringResource(id = R.string.create_account),
-        style = MaterialTheme.typography.headlineMedium
-    )
-
+internal fun SignUpBlock(onClick: () -> Unit) {
     val annotatedString = buildAnnotatedString {
         withStyle(
             style = SpanStyle(
@@ -27,10 +20,10 @@ internal fun ColumnScope.HeaderBlock(onClick: () -> Unit) {
                 fontFamily = Poppins
             )
         ) {
-            append(stringResource(id = R.string.already_have_an_account) + " ")
+            append(stringResource(id = R.string.dont_have_an_account) + " ")
             pushStringAnnotation(
                 tag = "clickable_text",
-                annotation = stringResource(id = R.string.login)
+                annotation = stringResource(id = R.string.sign_up)
             )
             withStyle(
                 style = SpanStyle(
@@ -39,7 +32,7 @@ internal fun ColumnScope.HeaderBlock(onClick: () -> Unit) {
                     fontFamily = Poppins
                 )
             ) {
-                append(stringResource(id = R.string.login))
+                append(stringResource(id = R.string.sign_up))
             }
         }
     }

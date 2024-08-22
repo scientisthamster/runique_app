@@ -1,9 +1,10 @@
 @file:OptIn(ExperimentalFoundationApi::class)
 
-package com.scientisthamster.auth.presentation.register
+package com.scientisthamster.auth.presentation.login
 
 import android.widget.Toast
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -14,6 +15,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
@@ -23,9 +25,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.scientisthamster.auth.presentation.R
-import com.scientisthamster.auth.presentation.register.components.HeaderBlock
-import com.scientisthamster.auth.presentation.register.components.PasswordRequirements
-import com.scientisthamster.core.presentation.designsystem.CheckIcon
+import com.scientisthamster.auth.presentation.login.components.HeaderBlock
+import com.scientisthamster.auth.presentation.login.components.SignUpBlock
 import com.scientisthamster.core.presentation.designsystem.EmailIcon
 import com.scientisthamster.core.presentation.designsystem.RuniqueTheme
 import com.scientisthamster.core.presentation.designsystem.components.GradientBackground
@@ -36,20 +37,21 @@ import com.scientisthamster.core.presentation.ui.ObserveAsEvents
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun RegisterScreenRoute(
-    onSignInClick: () -> Unit,
-    onSuccessfulRegistration: () -> Unit
+fun LoginScreenRoute(
+    onLoginSuccess: () -> Unit,
+    onSingUpClick: () -> Unit
 ) {
-    val viewModel = koinViewModel<RegisterViewModel>()
+
+    val viewModel = koinViewModel<LoginViewModel>()
 
     val state by viewModel.state.collectAsStateWithLifecycle()
 
     val context = LocalContext.current
     val keyboardController = LocalSoftwareKeyboardController.current
 
-    ObserveAsEvents(viewModel.registerEvent) { event ->
+    ObserveAsEvents(viewModel.loginEvent) { event ->
         when (event) {
-            is RegisterEvent.Error -> {
+            is LoginEvent.Error -> {
                 keyboardController?.hide()
                 Toast.makeText(
                     context,
@@ -58,30 +60,30 @@ fun RegisterScreenRoute(
                 ).show()
             }
 
-            RegisterEvent.RegistrationSuccess -> {
+            LoginEvent.LoginSuccess -> {
                 keyboardController?.hide()
                 Toast.makeText(
                     context,
-                    R.string.registration_successful,
+                    R.string.youre_logged_in,
                     Toast.LENGTH_LONG
                 ).show()
-                onSuccessfulRegistration()
+                onLoginSuccess()
             }
         }
     }
 
-    RegisterScreen(
+    LoginScreen(
         state = state,
-        onSignInClick = onSignInClick,
+        onSingUpClick = onSingUpClick,
         onAction = viewModel::onAction
     )
 }
 
 @Composable
-private fun RegisterScreen(
-    state: RegisterState,
-    onSignInClick: () -> Unit,
-    onAction: (RegisterAction) -> Unit,
+private fun LoginScreen(
+    state: LoginState,
+    onSingUpClick: () -> Unit,
+    onAction: (LoginAction) -> Unit
 ) {
     GradientBackground {
         Column(
@@ -91,16 +93,14 @@ private fun RegisterScreen(
                 .padding(horizontal = 16.dp)
                 .padding(top = 48.dp, bottom = 32.dp)
         ) {
-            HeaderBlock(onClick = onSignInClick)
+            HeaderBlock()
             Spacer(modifier = Modifier.height(48.dp))
             RuniqueTextField(
                 state = state.email,
                 hint = stringResource(id = R.string.example_email),
                 modifier = Modifier.fillMaxWidth(),
                 startIcon = EmailIcon,
-                endIcon = if (state.isEmailValid) CheckIcon else null,
                 title = stringResource(id = R.string.email),
-                additionalInfo = stringResource(id = R.string.must_be_a_valid_email),
                 keyboardType = KeyboardType.Email
             )
             Spacer(modifier = Modifier.height(16.dp))
@@ -108,31 +108,36 @@ private fun RegisterScreen(
                 state = state.password,
                 hint = stringResource(id = R.string.password),
                 isPasswordVisible = state.isPasswordVisible,
-                onTogglePasswordVisibilityClick = { onAction(RegisterAction.OnTogglePasswordVisibilityClick) },
+                onTogglePasswordVisibilityClick = { onAction(LoginAction.OnTogglePasswordVisibilityClick) },
                 modifier = Modifier.fillMaxWidth(),
                 title = stringResource(id = R.string.password)
             )
-            Spacer(modifier = Modifier.height(16.dp))
-            PasswordRequirements(passwordValidationState = state.passwordValidationState)
             Spacer(modifier = Modifier.height(32.dp))
             RuniqueButton(
-                text = stringResource(id = R.string.register),
-                isLoading = state.isRegistering,
-                onClick = { onAction(RegisterAction.OnRegisterClick) },
+                text = stringResource(id = R.string.login),
+                isLoading = state.isLoggingIn,
+                onClick = { onAction(LoginAction.OnLoginClick) },
                 modifier = Modifier.fillMaxWidth(),
-                enabled = state.canRegister
+                enabled = state.canLogin
             )
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f), contentAlignment = Alignment.BottomCenter
+            ) {
+                SignUpBlock(onClick = onSingUpClick)
+            }
         }
     }
 }
 
 @Preview
 @Composable
-private fun RegisterScreenPreview() {
+private fun LoginScreenPreview() {
     RuniqueTheme {
-        RegisterScreen(
-            state = RegisterState(),
-            onSignInClick = {},
+        LoginScreen(
+            state = LoginState(),
+            onSingUpClick = {},
             onAction = {}
         )
     }
