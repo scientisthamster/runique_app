@@ -12,10 +12,13 @@ import com.scientisthamster.auth.presentation.login.LoginScreenRoute
 import com.scientisthamster.auth.presentation.register.RegisterScreenRoute
 
 @Composable
-internal fun RuniqueNavHost(navController: NavHostController) {
+internal fun RuniqueNavHost(
+    navController: NavHostController,
+    isLoggedIn: Boolean
+) {
     NavHost(
         navController = navController,
-        startDestination = "auth"
+        startDestination = if (isLoggedIn) "run" else "auth"
     ) {
         authGraph(navController)
         runGraph(navController)
