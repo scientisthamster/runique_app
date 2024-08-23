@@ -80,12 +80,22 @@ internal class RegisterViewModel(
 
     private fun register() {
         viewModelScope.launch {
-            _state.update { it.copy(isRegistering = true) }
+            _state.update {
+                it.copy(
+                    isRegistering = true,
+                    canRegister = false
+                )
+            }
             val result = authRepository.register(
                 email = _state.value.email.text.toString().trim(),
                 password = _state.value.password.text.toString()
             )
-            _state.update { it.copy(isRegistering = false) }
+            _state.update {
+                it.copy(
+                    isRegistering = false,
+                    canRegister = true
+                )
+            }
 
             when (result) {
                 is Result.Error -> {
