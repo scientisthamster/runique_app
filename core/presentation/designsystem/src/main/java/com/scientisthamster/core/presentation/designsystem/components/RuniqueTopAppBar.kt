@@ -52,7 +52,7 @@ fun RuniqueTopAppBar(
     onMenuItemClick: (Int) -> Unit = {},
     onBackClick: () -> Unit = {},
     startContent: (@Composable () -> Unit)? = null,
-    scrollBehavior: TopAppBarScrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
+    scrollBehavior: TopAppBarScrollBehavior? = null
 ) {
     var isDropDownMenuOpen by rememberSaveable { mutableStateOf(false) }
 

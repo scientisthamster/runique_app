@@ -8,7 +8,6 @@ internal class RunOverviewViewModel : ViewModel() {
         when (action) {
             RunOverviewAction.OnAnalyticsClick -> {}
             RunOverviewAction.OnLogoutClick -> {}
-            RunOverviewAction.OnStartClick -> {}
         }
     }
 }

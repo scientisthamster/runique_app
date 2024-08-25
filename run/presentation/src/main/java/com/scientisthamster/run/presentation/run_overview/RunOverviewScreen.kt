@@ -9,7 +9,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -29,20 +28,23 @@ import kotlinx.collections.immutable.persistentListOf
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun RunOverviewScreenRoute() {
+fun RunOverviewScreenRoute(
+    onStartRunClick: () -> Unit
+) {
 
     val viewModel = koinViewModel<RunOverviewViewModel>()
 
-    RunOverviewScreen(onAction = viewModel::onAction)
+    RunOverviewScreen(
+        onStartRunClick = onStartRunClick,
+        onAction = viewModel::onAction
+    )
 }
 
 @Composable
 private fun RunOverviewScreen(
+    onStartRunClick: () -> Unit,
     onAction: (RunOverviewAction) -> Unit,
 ) {
-    val scrollBehavior =
-        TopAppBarDefaults.enterAlwaysScrollBehavior(state = rememberTopAppBarState())
-
     RuniqueScaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
@@ -74,13 +76,13 @@ private fun RunOverviewScreen(
                         modifier = Modifier.size(30.dp)
                     )
                 },
-                scrollBehavior = scrollBehavior,
+                scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(),
             )
         },
         floatingActionButton = {
             RuniqueFloatingActionButton(
                 icon = RunIcon,
-                onClick = { onAction(RunOverviewAction.OnStartClick) }
+                onClick = onStartRunClick
             )
         }
     ) {
@@ -92,6 +94,9 @@ private fun RunOverviewScreen(
 @Composable
 private fun RunOverviewScreenPreview() {
     RuniqueTheme {
-        RunOverviewScreen(onAction = {})
+        RunOverviewScreen(
+            onStartRunClick = {},
+            onAction = {}
+        )
     }
 }

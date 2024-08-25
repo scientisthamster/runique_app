@@ -9,6 +9,7 @@ import androidx.navigation.compose.navigation
 import com.scientisthamster.auth.presentation.intro.IntroScreenRoute
 import com.scientisthamster.auth.presentation.login.LoginScreenRoute
 import com.scientisthamster.auth.presentation.register.RegisterScreenRoute
+import com.scientisthamster.run.presentation.active_run.ActiveRunScreenRoute
 import com.scientisthamster.run.presentation.run_overview.RunOverviewScreenRoute
 
 @Composable
@@ -79,7 +80,12 @@ private fun NavGraphBuilder.runGraph(navController: NavHostController) {
         route = "run"
     ) {
         composable(route = "run_overview") {
-            RunOverviewScreenRoute()
+            RunOverviewScreenRoute(
+                onStartRunClick = { navController.navigate("active_run") }
+            )
+        }
+        composable(route = "active_run") {
+            ActiveRunScreenRoute()
         }
     }
 }
