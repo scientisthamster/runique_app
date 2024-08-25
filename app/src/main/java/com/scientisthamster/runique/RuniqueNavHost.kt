@@ -1,6 +1,5 @@
 package com.scientisthamster.runique
 
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
@@ -10,6 +9,7 @@ import androidx.navigation.compose.navigation
 import com.scientisthamster.auth.presentation.intro.IntroScreenRoute
 import com.scientisthamster.auth.presentation.login.LoginScreenRoute
 import com.scientisthamster.auth.presentation.register.RegisterScreenRoute
+import com.scientisthamster.run.presentation.run_overview.RunOverviewScreenRoute
 
 @Composable
 internal fun RuniqueNavHost(
@@ -79,7 +79,7 @@ private fun NavGraphBuilder.runGraph(navController: NavHostController) {
         route = "run"
     ) {
         composable(route = "run_overview") {
-            Text(text = "Run overview")
+            RunOverviewScreenRoute()
         }
     }
 }
