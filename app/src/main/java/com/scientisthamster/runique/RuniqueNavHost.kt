@@ -85,7 +85,15 @@ private fun NavGraphBuilder.runGraph(navController: NavHostController) {
             )
         }
         composable(route = "active_run") {
-            ActiveRunScreenRoute()
+            ActiveRunScreenRoute(
+                onBackClick = {
+                    navController.navigate("run_overview") {
+                        popUpTo("active_run") {
+                            inclusive = true
+                        }
+                    }
+                }
+            )
         }
     }
 }

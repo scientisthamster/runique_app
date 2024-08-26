@@ -8,5 +8,15 @@ internal sealed interface ActiveRunAction {
 
     data object OnResumeRunClick : ActiveRunAction
 
-    data object OnBackClick : ActiveRunAction
+    data class OnSubmitLocationPermission(
+        val isGranted: Boolean,
+        val shouldShowRationale: Boolean
+    ) : ActiveRunAction
+
+    data class OnSubmitNotificationPermission(
+        val isGranted: Boolean,
+        val shouldShowRationale: Boolean
+    ) : ActiveRunAction
+
+    data object OnDismissRationaleDialog : ActiveRunAction
 }
