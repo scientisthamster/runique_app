@@ -55,12 +55,12 @@ internal fun RunBriefInformationCard(
         ) {
             RunValueItem(
                 title = stringResource(id = R.string.distance),
-                value = (runData.distanceInMeters / 1000.0).toFormattedKm(),
+                value = (runData.distanceMeters / 1000.0).toFormattedKm(),
                 modifier = Modifier.defaultMinSize(minWidth = 75.dp)
             )
             RunValueItem(
                 title = stringResource(id = R.string.pace),
-                value = elapsedTime.toFormattedPace(distanceInKm = (runData.distanceInMeters / 1000.0)),
+                value = elapsedTime.toFormattedPace(distanceKm = (runData.distanceMeters / 1000.0)),
                 modifier = Modifier.defaultMinSize(minWidth = 75.dp)
             )
         }
@@ -98,7 +98,7 @@ private fun RunBriefInformationCardPreview() {
         RunBriefInformationCard(
             elapsedTime = 10.minutes,
             runData = RunData(
-                distanceInMeters = 3425,
+                distanceMeters = 3425,
                 pace = 3.minutes
             )
         )
