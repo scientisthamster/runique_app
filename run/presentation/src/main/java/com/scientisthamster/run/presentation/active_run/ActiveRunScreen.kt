@@ -33,7 +33,7 @@ import com.scientisthamster.core.presentation.designsystem.components.RuniqueSca
 import com.scientisthamster.core.presentation.designsystem.components.RuniqueTopAppBar
 import com.scientisthamster.run.presentation.R
 import com.scientisthamster.run.presentation.active_run.components.RunBriefInformationCard
-import com.scientisthamster.run.presentation.active_run.maps.RuniqueMap
+import com.scientisthamster.run.presentation.active_run.google_map.RuniqueMap
 import com.scientisthamster.run.presentation.util.isLocationPermissionGranted
 import com.scientisthamster.run.presentation.util.isNotificationPermissionGranted
 import com.scientisthamster.run.presentation.util.requestRuniquePermissions

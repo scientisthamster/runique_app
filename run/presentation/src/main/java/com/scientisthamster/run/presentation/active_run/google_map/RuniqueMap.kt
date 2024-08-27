@@ -1,4 +1,4 @@
-package com.scientisthamster.run.presentation.active_run.maps
+package com.scientisthamster.run.presentation.active_run.google_map
 
 import android.graphics.Bitmap
 import androidx.compose.animation.core.animateFloatAsState
@@ -78,6 +78,8 @@ internal fun RuniqueMap(
         properties = MapProperties(mapStyleOptions = mapStyle),
         uiSettings = MapUiSettings(zoomControlsEnabled = false)
     ) {
+        RuniquePolylines(locations)
+
         if (!isRunFinished && currentLocation != null) {
             MarkerComposable(
                 currentLocation,
