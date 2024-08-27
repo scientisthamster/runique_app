@@ -33,6 +33,7 @@ import com.scientisthamster.core.presentation.designsystem.components.RuniqueSca
 import com.scientisthamster.core.presentation.designsystem.components.RuniqueTopAppBar
 import com.scientisthamster.run.presentation.R
 import com.scientisthamster.run.presentation.active_run.components.RunBriefInformationCard
+import com.scientisthamster.run.presentation.active_run.maps.RuniqueMap
 import com.scientisthamster.run.presentation.util.isLocationPermissionGranted
 import com.scientisthamster.run.presentation.util.isNotificationPermissionGranted
 import com.scientisthamster.run.presentation.util.requestRuniquePermissions
@@ -144,10 +145,19 @@ private fun ActiveRunScreen(
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.surface)
         ) {
+            RuniqueMap(
+                isRunFinished = state.isRunFinished,
+                currentLocation = state.currentLocation,
+                locations = state.runData.locations,
+                onSnapshot = {},
+                modifier = Modifier.fillMaxSize()
+            )
             RunBriefInformationCard(
                 elapsedTime = state.elapsedTime,
                 runData = state.runData,
-                modifier = Modifier.padding(paddingValues)
+                modifier = Modifier
+                    .padding(paddingValues)
+                    .padding(16.dp)
             )
         }
     }
