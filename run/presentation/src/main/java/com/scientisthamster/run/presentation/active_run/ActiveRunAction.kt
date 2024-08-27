@@ -2,6 +2,8 @@ package com.scientisthamster.run.presentation.active_run
 
 internal sealed interface ActiveRunAction {
 
+    data object OnBackClick : ActiveRunAction
+
     data object OnToggleRunClick : ActiveRunAction
 
     data object OnFinishRunClick : ActiveRunAction
