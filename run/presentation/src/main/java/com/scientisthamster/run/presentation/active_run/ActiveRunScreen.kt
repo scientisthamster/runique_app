@@ -26,6 +26,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.scientisthamster.core.presentation.designsystem.RuniqueTheme
 import com.scientisthamster.core.presentation.designsystem.StartIcon
 import com.scientisthamster.core.presentation.designsystem.StopIcon
+import com.scientisthamster.core.presentation.designsystem.components.RuniqueButton
 import com.scientisthamster.core.presentation.designsystem.components.RuniqueDialog
 import com.scientisthamster.core.presentation.designsystem.components.RuniqueFloatingActionButton
 import com.scientisthamster.core.presentation.designsystem.components.RuniqueOutlinedButton
@@ -160,6 +161,32 @@ private fun ActiveRunScreen(
                     .padding(16.dp)
             )
         }
+    }
+
+    if (!state.shouldTrackRunning && state.hasStartedRunning) {
+        RuniqueDialog(
+            title = stringResource(id = R.string.running_is_paused),
+            onDismiss = {
+                onAction(ActiveRunAction.OnResumeRunClick)
+            },
+            description = stringResource(id = R.string.resume_or_finish_run),
+            primaryButton = {
+                RuniqueButton(
+                    text = stringResource(id = R.string.resume),
+                    isLoading = false,
+                    onClick = { onAction(ActiveRunAction.OnResumeRunClick) },
+                    modifier = Modifier.weight(1f)
+                )
+            },
+            secondaryButton = {
+                RuniqueOutlinedButton(
+                    text = stringResource(id = R.string.finish),
+                    isLoading = state.isSavingRun,
+                    onClick = { onAction(ActiveRunAction.OnFinishRunClick) },
+                    modifier = Modifier.weight(1f)
+                )
+            }
+        )
     }
 
     if (state.shouldShowLocationRationale || state.shouldShowNotificationRationale) {

@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -23,10 +24,10 @@ import androidx.compose.ui.window.Dialog
 fun RuniqueDialog(
     title: String,
     description: String,
-    primaryButton: @Composable () -> Unit,
+    primaryButton: @Composable RowScope.() -> Unit,
     onDismiss: () -> Unit,
     modifier: Modifier = Modifier,
-    secondaryButton: (@Composable () -> Unit)? = null
+    secondaryButton: (@Composable RowScope.() -> Unit)? = null
 ) {
     Dialog(onDismissRequest = onDismiss) {
         Column(
@@ -54,7 +55,7 @@ fun RuniqueDialog(
                 horizontalArrangement = Arrangement.spacedBy(16.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                secondaryButton?.invoke()
+                secondaryButton?.invoke(this)
                 primaryButton()
             }
         }
