@@ -49,12 +49,21 @@ class RunningTracker(
 
     init {
         isTracking
+            .onEach {
+                if (!it) {
+                    val updatedLocations = buildList<List<LocationTimestamp>> {
+                        addAll(_runData.value.locations)
+                        add(emptyList())
+                    }.toList()
+                    _runData.update { it.copy(locations = updatedLocations) }
+                }
+            }
             .flatMapLatest { isTracking ->
                 if (isTracking) {
                     Timer.calculateElapsedTime()
                 } else flowOf()
             }
-            .onEach { _elapsedTime.update { it } }
+            .onEach { elapsedTime -> _elapsedTime.update { it.plus(elapsedTime) } }
             .launchIn(applicationScope)
 
         combineTransform(
