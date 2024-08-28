@@ -35,6 +35,7 @@ import com.scientisthamster.core.presentation.designsystem.components.RuniqueTop
 import com.scientisthamster.run.presentation.R
 import com.scientisthamster.run.presentation.active_run.components.RunBriefInformationCard
 import com.scientisthamster.run.presentation.active_run.google_map.RuniqueMap
+import com.scientisthamster.run.presentation.active_run.service.ActiveRunService
 import com.scientisthamster.run.presentation.util.isLocationPermissionGranted
 import com.scientisthamster.run.presentation.util.isNotificationPermissionGranted
 import com.scientisthamster.run.presentation.util.requestRuniquePermissions
@@ -44,6 +45,7 @@ import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun ActiveRunScreenRoute(
+    onServiceToggle: (isServiceRunning: Boolean) -> Unit,
     onBackClick: () -> Unit
 ) {
     val viewModel = koinViewModel<ActiveRunViewModel>()
@@ -52,6 +54,7 @@ fun ActiveRunScreenRoute(
 
     ActiveRunScreen(
         state = state,
+        onServiceToggle = onServiceToggle,
         onBackClick = onBackClick,
         onAction = viewModel::onAction
     )
@@ -60,6 +63,7 @@ fun ActiveRunScreenRoute(
 @Composable
 private fun ActiveRunScreen(
     state: ActiveRunState,
+    onServiceToggle: (isServiceRunning: Boolean) -> Unit,
     onBackClick: () -> Unit,
     onAction: (ActiveRunAction) -> Unit
 ) {
@@ -91,6 +95,18 @@ private fun ActiveRunScreen(
                 shouldShowRationale = shouldShowNotificationRationale
             )
         )
+    }
+
+    LaunchedEffect(state.isRunFinished) {
+        if (state.isRunFinished) {
+            onServiceToggle(false)
+        }
+    }
+
+    LaunchedEffect(state.shouldTrackRunning) {
+        if (context.isLocationPermissionGranted() && state.shouldTrackRunning && !ActiveRunService.isServiceActive) {
+            onServiceToggle(true)
+        }
     }
 
     LaunchedEffect(Unit) {
@@ -225,6 +241,7 @@ private fun ActiveRunScreenPreview() {
     RuniqueTheme {
         ActiveRunScreen(
             state = ActiveRunState(),
+            onServiceToggle = {},
             onBackClick = {},
             onAction = {}
         )

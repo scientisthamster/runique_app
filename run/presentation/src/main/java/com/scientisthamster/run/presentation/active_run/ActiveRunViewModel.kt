@@ -3,6 +3,7 @@ package com.scientisthamster.run.presentation.active_run
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.scientisthamster.run.domain.RunningTracker
+import com.scientisthamster.run.presentation.active_run.service.ActiveRunService
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -19,7 +20,12 @@ internal class ActiveRunViewModel(
     private val runningTracker: RunningTracker
 ) : ViewModel() {
 
-    private val _state = MutableStateFlow(ActiveRunState())
+    private val _state = MutableStateFlow(
+        ActiveRunState(
+            shouldTrackRunning = ActiveRunService.isServiceActive && runningTracker.isTracking.value,
+            hasStartedRunning = ActiveRunService.isServiceActive
+        )
+    )
     val state = _state.asStateFlow()
 
     private val _activeRunEventChannel = Channel<ActiveRunEvent>()
@@ -46,7 +52,10 @@ internal class ActiveRunViewModel(
             ActiveRunAction.OnBackClick -> {
                 _state.update { it.copy(shouldTrackRunning = false) }
             }
-            ActiveRunAction.OnFinishRunClick -> {}
+
+            ActiveRunAction.OnFinishRunClick -> {
+                _state.update { it.copy(isRunFinished = true) }
+            }
             ActiveRunAction.OnResumeRunClick -> {
                 _state.update { it.copy(shouldTrackRunning = true) }
             }
@@ -124,5 +133,12 @@ internal class ActiveRunViewModel(
                 _state.update { it.copy(elapsedTime = elapsedTime) }
             }
             .launchIn(viewModelScope)
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        if (!ActiveRunService.isServiceActive) {
+            runningTracker.stopObservingLocation()
+        }
     }
 }
