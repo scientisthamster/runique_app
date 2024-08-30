@@ -20,6 +20,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.flow.zip
 import kotlin.math.roundToInt
 import kotlin.time.Duration
+import kotlin.time.Duration.Companion.ZERO
 import kotlin.time.Duration.Companion.seconds
 
 class RunningTracker(
@@ -124,6 +125,13 @@ class RunningTracker(
             return listOf(value)
         }
         return dropLast(1).plus(listOf(value))
+    }
+
+    fun finishRun() {
+        stopObservingLocation()
+        setIsTracking(false)
+        _elapsedTime.update { ZERO }
+        _runData.update { RunData() }
     }
 
     private companion object {

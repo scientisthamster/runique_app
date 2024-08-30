@@ -3,6 +3,7 @@
 package com.scientisthamster.run.presentation.active_run
 
 import android.Manifest
+import android.graphics.Bitmap
 import android.os.Build
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -42,6 +43,7 @@ import com.scientisthamster.run.presentation.util.requestRuniquePermissions
 import com.scientisthamster.run.presentation.util.shouldShowLocationPermissionRationale
 import com.scientisthamster.run.presentation.util.shouldShowNotificationPermissionRationale
 import org.koin.androidx.compose.koinViewModel
+import java.io.ByteArrayOutputStream
 
 @Composable
 fun ActiveRunScreenRoute(
@@ -56,6 +58,7 @@ fun ActiveRunScreenRoute(
         state = state,
         onServiceToggle = onServiceToggle,
         onBackClick = onBackClick,
+        onSnapshotTaken = viewModel::onSnapshotTaken,
         onAction = viewModel::onAction
     )
 }
@@ -65,6 +68,7 @@ private fun ActiveRunScreen(
     state: ActiveRunState,
     onServiceToggle: (isServiceRunning: Boolean) -> Unit,
     onBackClick: () -> Unit,
+    onSnapshotTaken: (ByteArray) -> Unit,
     onAction: (ActiveRunAction) -> Unit
 ) {
     val context = LocalContext.current
@@ -166,7 +170,13 @@ private fun ActiveRunScreen(
                 isRunFinished = state.isRunFinished,
                 currentLocation = state.currentLocation,
                 locations = state.runData.locations,
-                onSnapshot = {},
+                onSnapshot = { bitmap ->
+                    val stream = ByteArrayOutputStream()
+                    stream.use {
+                        bitmap.compress(Bitmap.CompressFormat.JPEG, 80, it)
+                    }
+                    onSnapshotTaken(stream.toByteArray())
+                },
                 modifier = Modifier.fillMaxSize()
             )
             RunBriefInformationCard(
@@ -191,7 +201,8 @@ private fun ActiveRunScreen(
                     text = stringResource(id = R.string.resume),
                     isLoading = false,
                     onClick = { onAction(ActiveRunAction.OnResumeRunClick) },
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier.weight(1f),
+                    enabled = !state.isSavingRun
                 )
             },
             secondaryButton = {
@@ -199,7 +210,8 @@ private fun ActiveRunScreen(
                     text = stringResource(id = R.string.finish),
                     isLoading = state.isSavingRun,
                     onClick = { onAction(ActiveRunAction.OnFinishRunClick) },
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier.weight(1f),
+                    enabled = !state.isSavingRun
                 )
             }
         )
@@ -243,6 +255,7 @@ private fun ActiveRunScreenPreview() {
             state = ActiveRunState(),
             onServiceToggle = {},
             onBackClick = {},
+            onSnapshotTaken = {},
             onAction = {}
         )
     }
