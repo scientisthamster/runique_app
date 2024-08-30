@@ -4,6 +4,7 @@ import android.app.Application
 import com.scientisthamster.auth.data.di.authDataModule
 import com.scientisthamster.auth.presentation.di.authViewModelModule
 import com.scientisthamster.core.data.di.coreDataModule
+import com.scientisthamster.core.database.di.databaseModule
 import com.scientisthamster.run.location.di.locationModule
 import com.scientisthamster.run.presentation.di.runPresentationModule
 import com.scientisthamster.runique.di.appModule
@@ -32,6 +33,7 @@ class RuniqueApplication : Application() {
                 appModule,
                 authDataModule,
                 authViewModelModule,
+                databaseModule,
                 coreDataModule,
                 runPresentationModule,
                 locationModule
