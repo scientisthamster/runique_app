@@ -6,6 +6,7 @@ import com.scientisthamster.auth.presentation.di.authViewModelModule
 import com.scientisthamster.core.data.di.coreDataModule
 import com.scientisthamster.core.database.di.databaseModule
 import com.scientisthamster.run.location.di.locationModule
+import com.scientisthamster.run.network.di.networkModule
 import com.scientisthamster.run.presentation.di.runPresentationModule
 import com.scientisthamster.runique.di.appModule
 import kotlinx.coroutines.CoroutineScope
@@ -35,8 +36,9 @@ class RuniqueApplication : Application() {
                 authViewModelModule,
                 databaseModule,
                 coreDataModule,
-                runPresentationModule,
-                locationModule
+                locationModule,
+                networkModule,
+                runPresentationModule
             )
         }
     }

@@ -5,6 +5,7 @@ package com.scientisthamster.run.presentation.active_run
 import android.Manifest
 import android.graphics.Bitmap
 import android.os.Build
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -33,6 +34,7 @@ import com.scientisthamster.core.presentation.designsystem.components.RuniqueFlo
 import com.scientisthamster.core.presentation.designsystem.components.RuniqueOutlinedButton
 import com.scientisthamster.core.presentation.designsystem.components.RuniqueScaffold
 import com.scientisthamster.core.presentation.designsystem.components.RuniqueTopAppBar
+import com.scientisthamster.core.presentation.ui.ObserveAsEvents
 import com.scientisthamster.run.presentation.R
 import com.scientisthamster.run.presentation.active_run.components.RunBriefInformationCard
 import com.scientisthamster.run.presentation.active_run.google_map.RuniqueMap
@@ -47,12 +49,29 @@ import java.io.ByteArrayOutputStream
 
 @Composable
 fun ActiveRunScreenRoute(
-    onServiceToggle: (isServiceRunning: Boolean) -> Unit,
-    onBackClick: () -> Unit
+    onBackClick: () -> Unit,
+    onFinishedRun: () -> Unit,
+    onServiceToggle: (isServiceRunning: Boolean) -> Unit
 ) {
     val viewModel = koinViewModel<ActiveRunViewModel>()
 
     val state by viewModel.state.collectAsStateWithLifecycle()
+
+    val context = LocalContext.current
+
+    ObserveAsEvents(viewModel.activeRunEvent) {
+        when (it) {
+            is ActiveRunEvent.Error -> {
+                Toast.makeText(
+                    context,
+                    it.error.asString(context),
+                    Toast.LENGTH_LONG
+                ).show()
+            }
+
+            ActiveRunEvent.RunSaved -> onFinishedRun()
+        }
+    }
 
     ActiveRunScreen(
         state = state,

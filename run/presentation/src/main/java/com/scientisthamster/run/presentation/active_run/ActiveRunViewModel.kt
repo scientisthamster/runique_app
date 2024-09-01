@@ -4,6 +4,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.scientisthamster.core.domain.location.Location
 import com.scientisthamster.core.domain.run.Run
+import com.scientisthamster.core.domain.run.RunRepository
+import com.scientisthamster.core.domain.util.Result
+import com.scientisthamster.core.presentation.ui.asUiText
 import com.scientisthamster.run.domain.LocationMetricsCalculator
 import com.scientisthamster.run.domain.RunningTracker
 import com.scientisthamster.run.presentation.active_run.service.ActiveRunService
@@ -23,7 +26,8 @@ import java.time.ZoneId
 import java.time.ZonedDateTime
 
 internal class ActiveRunViewModel(
-    private val runningTracker: RunningTracker
+    private val runningTracker: RunningTracker,
+    private val runRepository: RunRepository
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(
@@ -124,8 +128,17 @@ internal class ActiveRunViewModel(
                 mapPictureUrl = null
             )
 
-            // Save run in repository
             runningTracker.finishRun()
+
+            when (val result = runRepository.upsertRun(run = run, mapPicture = bytes)) {
+                is Result.Error -> {
+                    _activeRunEventChannel.send(ActiveRunEvent.Error(result.error.asUiText()))
+                }
+
+                is Result.Success -> {
+                    _activeRunEventChannel.send(ActiveRunEvent.RunSaved)
+                }
+            }
             _state.update { it.copy(isSavingRun = false) }
         }
     }
