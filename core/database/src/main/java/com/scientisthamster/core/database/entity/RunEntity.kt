@@ -5,7 +5,7 @@ import androidx.room.PrimaryKey
 import org.bson.types.ObjectId
 
 @Entity
-internal data class RunEntity(
+data class RunEntity(
     @PrimaryKey(autoGenerate = false)
     val id: String = ObjectId().toHexString(),
     val durationMillis: Long,

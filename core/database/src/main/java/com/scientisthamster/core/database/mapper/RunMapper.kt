@@ -8,7 +8,7 @@ import java.time.Instant
 import java.time.ZoneId
 import kotlin.time.Duration.Companion.milliseconds
 
-internal fun RunEntity.toRun(): Run {
+fun RunEntity.toRun(): Run {
     return Run(
         id = id,
         duration = durationMillis.milliseconds,
@@ -24,7 +24,7 @@ internal fun RunEntity.toRun(): Run {
     )
 }
 
-internal fun Run.toRunEntity(): RunEntity {
+fun Run.toRunEntity(): RunEntity {
     return RunEntity(
         id = id ?: ObjectId().toHexString(),
         durationMillis = duration.inWholeMilliseconds,

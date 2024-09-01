@@ -23,6 +23,7 @@ internal class RunOverviewViewModel(
     init {
         watchRuns()
         viewModelScope.launch {
+            runRepository.syncPendingRuns()
             runRepository.fetchRuns()
         }
     }
