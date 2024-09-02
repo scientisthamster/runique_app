@@ -15,13 +15,13 @@ interface RunPendingSyncDao {
     @Query("SELECT * FROM runpendingsyncentity WHERE userId=:userId")
     suspend fun getAllRunPendingSyncEntities(userId: String): List<RunPendingSyncEntity>
 
-    @Query("SELECT * FROM runpendingsyncentity WHERE id=:id")
+    @Query("SELECT * FROM runpendingsyncentity WHERE runId=:id")
     suspend fun getRunPendingSyncEntity(id: String): RunPendingSyncEntity?
 
     @Upsert
     suspend fun upsertPendingSyncEntity(entity: RunPendingSyncEntity)
 
-    @Query("DELETE FROM runpendingsyncentity WHERE id=:id")
+    @Query("DELETE FROM runpendingsyncentity WHERE runId=:id")
     suspend fun deleteRunPendingSyncEntity(id: String)
 
     /**

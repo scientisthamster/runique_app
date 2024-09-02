@@ -1,5 +1,6 @@
 package com.scientisthamster.core.data.run
 
+import com.scientisthamster.core.data.networking.get
 import com.scientisthamster.core.database.dao.RunPendingSyncDao
 import com.scientisthamster.core.database.mapper.toRun
 import com.scientisthamster.core.domain.SessionStorage
@@ -12,6 +13,10 @@ import com.scientisthamster.core.domain.util.DataError
 import com.scientisthamster.core.domain.util.EmptyResult
 import com.scientisthamster.core.domain.util.Result
 import com.scientisthamster.core.domain.util.asEmptyDataResult
+import io.ktor.client.HttpClient
+import io.ktor.client.plugins.auth.Auth
+import io.ktor.client.plugins.auth.providers.BearerAuthProvider
+import io.ktor.client.plugins.plugin
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -25,7 +30,8 @@ class OfflineFirstRunRepository(
     private val remoteRunDataSource: RemoteRunDataSource,
     private val runPendingSyncDao: RunPendingSyncDao,
     private val sessionStorage: SessionStorage,
-    private val syncRunScheduler: SyncRunScheduler
+    private val syncRunScheduler: SyncRunScheduler,
+    private val httpClient: HttpClient
 ) : RunRepository {
 
     override fun getRuns(): Flow<List<Run>> {
@@ -124,7 +130,7 @@ class OfflineFirstRunRepository(
                             is Result.Error -> Unit
                             is Result.Success -> {
                                 applicationScope.launch {
-                                    runPendingSyncDao.deleteRunPendingSyncEntity(it.id)
+                                    runPendingSyncDao.deleteRunPendingSyncEntity(it.runId)
                                 }.join()
                             }
                         }
@@ -148,5 +154,20 @@ class OfflineFirstRunRepository(
             createJobs.forEach { it.join() }
             deleteJobs.forEach { it.join() }
         }
+    }
+
+    override suspend fun deleteAllRuns() {
+        localRunDataSource.deleteAllRuns()
+    }
+
+    override suspend fun logout(): EmptyResult<DataError.Network> {
+        val result = httpClient.get<Unit>(route = "/logout").asEmptyDataResult()
+
+        httpClient.plugin(Auth).providers
+            .filterIsInstance<BearerAuthProvider>()
+            .firstOrNull()
+            ?.clearToken()
+
+        return result
     }
 }

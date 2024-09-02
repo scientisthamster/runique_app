@@ -99,7 +99,7 @@ class SyncRunWorkerScheduler(
             )
             .setInputData(
                 Data.Builder()
-                    .putString(CreateRunWorker.RUN_ID, pendingRun.id)
+                    .putString(CreateRunWorker.RUN_ID, pendingRun.runId)
                     .build()
             )
             .build()

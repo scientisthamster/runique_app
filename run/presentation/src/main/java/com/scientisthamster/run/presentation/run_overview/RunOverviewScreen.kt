@@ -31,6 +31,7 @@ import com.scientisthamster.core.presentation.designsystem.components.RuniqueFlo
 import com.scientisthamster.core.presentation.designsystem.components.RuniqueScaffold
 import com.scientisthamster.core.presentation.designsystem.components.RuniqueTopAppBar
 import com.scientisthamster.core.presentation.designsystem.components.util.DropDownItem
+import com.scientisthamster.core.presentation.ui.ObserveAsEvents
 import com.scientisthamster.run.presentation.R
 import com.scientisthamster.run.presentation.run_overview.components.RunCard
 import com.scientisthamster.run.presentation.run_overview.model.RunUi
@@ -39,11 +40,18 @@ import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun RunOverviewScreenRoute(
-    onStartRunClick: () -> Unit
+    onStartRunClick: () -> Unit,
+    onLogoutClick: () -> Unit
 ) {
     val viewModel = koinViewModel<RunOverviewViewModel>()
 
     val state by viewModel.state.collectAsStateWithLifecycle()
+
+    ObserveAsEvents(viewModel.runOverviewEventChannel) {
+        when (it) {
+            RunOverviewEvent.Logout -> onLogoutClick()
+        }
+    }
 
     RunOverviewScreen(
         state = state,
