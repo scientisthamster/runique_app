@@ -5,6 +5,7 @@ import com.scientisthamster.auth.data.di.authDataModule
 import com.scientisthamster.auth.presentation.di.authViewModelModule
 import com.scientisthamster.core.data.di.coreDataModule
 import com.scientisthamster.core.database.di.databaseModule
+import com.scientisthamster.run.data.di.runDataModule
 import com.scientisthamster.run.location.di.locationModule
 import com.scientisthamster.run.network.di.networkModule
 import com.scientisthamster.run.presentation.di.runPresentationModule
@@ -13,6 +14,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
+import org.koin.androidx.workmanager.koin.workManagerFactory
 import org.koin.core.context.startKoin
 import timber.log.Timber
 
@@ -30,6 +32,7 @@ class RuniqueApplication : Application() {
         startKoin {
             androidLogger()
             androidContext(this@RuniqueApplication)
+            workManagerFactory()
             modules(
                 appModule,
                 authDataModule,
@@ -38,6 +41,7 @@ class RuniqueApplication : Application() {
                 coreDataModule,
                 locationModule,
                 networkModule,
+                runDataModule,
                 runPresentationModule
             )
         }
