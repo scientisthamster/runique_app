@@ -7,6 +7,7 @@ import com.scientisthamster.core.domain.run.LocalRunDataSource
 import com.scientisthamster.core.domain.run.RemoteRunDataSource
 import com.scientisthamster.core.domain.run.Run
 import com.scientisthamster.core.domain.run.RunRepository
+import com.scientisthamster.core.domain.run.SyncRunScheduler
 import com.scientisthamster.core.domain.util.DataError
 import com.scientisthamster.core.domain.util.EmptyResult
 import com.scientisthamster.core.domain.util.Result
@@ -23,7 +24,8 @@ class OfflineFirstRunRepository(
     private val localRunDataSource: LocalRunDataSource,
     private val remoteRunDataSource: RemoteRunDataSource,
     private val runPendingSyncDao: RunPendingSyncDao,
-    private val sessionStorage: SessionStorage
+    private val sessionStorage: SessionStorage,
+    private val syncRunScheduler: SyncRunScheduler
 ) : RunRepository {
 
     override fun getRuns(): Flow<List<Run>> {
@@ -54,7 +56,18 @@ class OfflineFirstRunRepository(
         )
 
         return when (remoteResult) {
-            is Result.Error -> remoteResult.asEmptyDataResult()
+            is Result.Error -> {
+                applicationScope.launch {
+                    syncRunScheduler.scheduleSync(
+                        type = SyncRunScheduler.SyncType.CreateRun(
+                            run = runWithId,
+                            mapPictureByteArray = mapPicture
+                        )
+                    )
+                }.join()
+                Result.Success(Unit)
+            }
+
             is Result.Success -> {
                 applicationScope.async {
                     localRunDataSource.upsertRun(remoteResult.data).asEmptyDataResult()
@@ -75,9 +88,17 @@ class OfflineFirstRunRepository(
             return
         }
 
-        applicationScope.async {
+        val result = applicationScope.async {
             remoteRunDataSource.deleteRun(id)
         }.await()
+
+        if (result is Result.Error) {
+            applicationScope.launch {
+                syncRunScheduler.scheduleSync(
+                    type = SyncRunScheduler.SyncType.DeleteRun(id)
+                )
+            }.join()
+        }
     }
 
     override suspend fun syncPendingRuns() {
