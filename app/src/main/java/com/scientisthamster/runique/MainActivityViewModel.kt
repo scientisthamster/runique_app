@@ -22,4 +22,10 @@ class MainActivityViewModel(
             state = state.copy(isCheckingAuth = false)
         }
     }
+
+    fun shouldShowAnalyticsDialog(show: Boolean) {
+        viewModelScope.launch {
+            state = state.copy(shouldShowAnalyticsDialog = show)
+        }
+    }
 }

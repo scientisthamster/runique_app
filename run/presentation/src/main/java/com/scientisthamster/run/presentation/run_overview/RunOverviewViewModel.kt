@@ -47,7 +47,11 @@ internal class RunOverviewViewModel(
 
     fun onAction(action: RunOverviewAction) {
         when (action) {
-            RunOverviewAction.OnAnalyticsClick -> {}
+            RunOverviewAction.OnAnalyticsClick -> {
+                viewModelScope.launch {
+                    _runOverviewEventChannel.send(RunOverviewEvent.OpenAnalytics)
+                }
+            }
             RunOverviewAction.OnLogoutClick -> {
                 logout()
                 viewModelScope.launch {

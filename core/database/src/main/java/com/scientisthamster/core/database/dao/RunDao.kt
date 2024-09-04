@@ -7,7 +7,7 @@ import com.scientisthamster.core.database.entity.RunEntity
 import kotlinx.coroutines.flow.Flow
 
 @Dao
-internal interface RunDao {
+interface RunDao {
 
     @Upsert
     suspend fun upsertRun(run: RunEntity)

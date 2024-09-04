@@ -41,6 +41,7 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun RunOverviewScreenRoute(
     onStartRunClick: () -> Unit,
+    onAnalyticsClick: () -> Unit,
     onLogoutClick: () -> Unit
 ) {
     val viewModel = koinViewModel<RunOverviewViewModel>()
@@ -49,6 +50,7 @@ fun RunOverviewScreenRoute(
 
     ObserveAsEvents(viewModel.runOverviewEventChannel) {
         when (it) {
+            RunOverviewEvent.OpenAnalytics -> onAnalyticsClick()
             RunOverviewEvent.Logout -> onLogoutClick()
         }
     }
